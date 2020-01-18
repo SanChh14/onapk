@@ -1,0 +1,135 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script src="https://kit.fontawesome.com/c8d5dbd828.js" crossorigin="anonymous"></script>
+
+
+    </script>
+    <title>SanHax</title>
+</head>
+<body>
+    <main>
+        <header>
+            <h1><a href="{% url 'home' %}"><span id="san">On</span><span id="hax">apK</span></a></h1>
+            <nav>
+                <ul>
+                    <li><a href="{% url 'home' %}">Home</a></li>
+                    <li><a href="{% url 'apps' %}">Apps</a></li>
+                    <li><a href="{% url 'games' %}">Games</a></li>
+                    <li><a href="{% url 'tutorials' %}">Tutorials</a></li>
+                    <li><a href="{% url 'about' %}">About</a></li>
+                </ul>
+            </nav>
+        </header>
+        <hr />
+        <div class="container">
+            <aside>
+                <div class="search-bar">
+                    <form action="{%url 'search' %}" method="GET">
+                        <input class="search-text" type="text" name="q" placeholder="Search..." value="{{request.GET.q}}"/>
+                        <button class="search-button" type="submit"><i class="fas fa-search"></i></button>
+                    </form>
+                </div>
+                <div class="trends">
+                    <div class="trendingss">
+                        <h2 class="trending">Trendings</h2>
+                        <div class="drop"><i class="fas fa-chevron-down"></i></div>
+                        <div class="up"><i class="fas fa-chevron-up"></i></div>
+                    </div>
+
+                    <ul>
+                        {% for trending in trendings %}
+                            {% if trending.category == 'app' %}
+                                <li><a href="{% url 'app_detail' trending.id %}">{{ trending.title }}</a></li>
+                            {% endif %}
+                            {% if trending.category == 'game' %}
+                                <li><a href="{% url 'game_detail' trending.id %}">{{ trending.title }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            </aside>
+            <section>
+                <h2><span id="latest">Search </span><span id="postss">Results for '<i>{{request.GET.q}}</i>'</span></h2>
+                <div id="posts">
+                    {% if all %}
+                        {% for app in all %}
+                            <div class="post">
+                                {% if app.category == 'app' %}
+                                    <h3><a href="{% url 'app_detail' app.id %}">{{ app.title }}</a></h3>
+                                {% endif %}
+                                {% if app.category == 'game' %}
+                                    <h3><a href="{% url 'game_detail' app.id %}">{{ app.title }}</a></h3>
+                                {% endif %}
+                                <div class="pub_date">{{ app.pub_date_short }}</div>
+                                <div class="frontimg">
+                                    {% if app.category == 'app' %}
+                                        <a href="{% url 'app_detail' app.id %}"><img src="{{ app.image.url }}"></a>
+                                    {% endif %}
+                                    {% if app.category == 'game' %}
+                                        <a href="{% url 'game_detail' app.id %}"><img src="{{ app.image.url }}"></a>
+                                    {% endif %}
+                                </div>
+                                <p>
+                                    {{ app.summary }}...
+                                    {% if app.category == 'app' %}
+                                        <a href="{% url 'app_detail' app.id %}">(Read more)</a>
+                                    {% endif %}
+                                    {% if app.category == 'game' %}
+                                        <a href="{% url 'game_detail' app.id %}">(Read more)</a>
+                                    {% endif %}
+                                </p>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="post">
+                            No posts found!
+                        </div>
+                    {% endif %}
+                </div>
+                {% if all %}
+                    <div class="paginator">
+                        {% if all.has_previous %}
+                        <span class="prev_next">
+                            <a href="?page=1&q={{request.GET.q}}"><<</a>
+                        </span>
+                        <span class="pagenumber">
+                            <a href="?page={{ all.previous_page_number }}&q={{request.GET.q}}"><</a>
+                        {% endif %}
+
+                        {% for num in all.paginator.page_range %}
+                            {% if all.number == num %}
+                                <span id=currentpage><a href="?page={{ num }}&q={{request.GET.q}}">{{ num }}</a></span>
+                            {% elif num > all.number|add:'-3' and num < all.number|add:'3' %}
+                                <a href="?page={{ num }}&q={{request.GET.q}}">{{ num }}</a>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if all.has_next %}
+                            <a href="?page={{ all.next_page_number }}&q={{request.GET.q}}">></a>
+                        </span>
+                        <span class="prev_next">
+                            <a href="?page={{ all.paginator.num_pages }}&q={{request.GET.q}}">>></a>
+                        </span>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </section>
+        </div>
+
+    </main>
+    <footer>
+        <h3>&copy;BhuOn</h3>
+    </footer>
+
+    <script src="http://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

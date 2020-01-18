@@ -1,0 +1,105 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script src="https://kit.fontawesome.com/c8d5dbd828.js" crossorigin="anonymous"></script>
+
+
+    </script>
+    <title>SanHax</title>
+</head>
+<body>
+    <main>
+        <header>
+            <h1><a href="{% url 'home' %}"><span id="san">On</span><span id="hax">apK</span></a></h1>
+            <nav>
+                <ul>
+                    <li><a href="{% url 'home' %}">Home</a></li>
+                    <li><a href="{% url 'apps' %}">Apps</a></li>
+                    <li><a href="{% url 'games' %}">Games</a></li>
+                    <li><a href="{% url 'tutorials' %}">Tutorials</a></li>
+                    <li><a href="{% url 'about' %}">About</a></li>
+                </ul>
+            </nav>
+        </header>
+        <hr>
+        <div class="container">
+            <aside>
+                <div class="search-bar">
+                    <form action="{%url 'search' %}" method="GET">
+                        <input class="search-text" type="text" name="q" placeholder="Search..." value="{{request.GET.q}}"/>
+                        <button class="search-button" type="submit"><i class="fas fa-search"></i></button>
+                    </form>
+                </div>
+                <div class="trends">
+                    <div class="trendingss">
+                        <h2 class="trending">Trendings</h2>
+                        <div class="drop"><i class="fas fa-chevron-down"></i></div>
+                        <div class="up"><i class="fas fa-chevron-up"></i></div>
+                    </div>
+
+                    <ul>
+                        {% for trending in trendings %}
+                            {% if trending.category == 'app' %}
+                                <li><a href="{% url 'app_detail' trending.id %}">{{ trending.title }}</a></li>
+                            {% endif %}
+                            {% if trending.category == 'game' %}
+                                <li><a href="{% url 'game_detail' trending.id %}">{{ trending.title }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            </aside>
+            <section>
+                <div id="posts">
+                        <div class="post">
+                            <h3>{{ game_detail.title }}</h3>
+                            <div class="pub_date">{{ game_detail.pub_date_short}}</div>
+                            <div class="frontimg">
+                                <img src="{{ game_detail.image.url }}" alt="PES 2019">
+                            </div>
+                            {% for paragraph in description %}
+                                <p>
+                                    {{ paragraph }}
+                                </p>
+                            {% endfor %}
+                            <div class="features">
+                                <h4>Features:</h4>
+                                <ul>
+                                    {% for line in features %}
+                                        <li>{{line}}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            <div class="install">
+                                <h4>How to install?</h4>
+                                <ul>
+                                    {% for steps in install_steps %}
+                                        <li>{{steps}}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            <div class="download">
+                                <h4>Your download link is here</h4>
+                                <a href="{{game_detail.link}}" target="_blank">DOWNLOAD</a>
+                            </div>
+                        </div>
+                </div>
+            </section>
+        </div>
+
+    </main>
+    <footer>
+        <h3>&copy;BhuOn</h3>
+    </footer>
+
+    <script src="http://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>
